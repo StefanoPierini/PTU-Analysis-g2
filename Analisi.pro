@@ -23,16 +23,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
+CONFIG += qwt
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        measure.cpp
 
 HEADERS += \
-        mainwindow.h
+        UsefulFunctions.h \
+        gnuplot-iostream.h \
+        mainwindow.h \
+        measure.h
 
 FORMS += \
         mainwindow.ui
+
+LIBS += -lboost_iostreams -lboost_system -lboost_filesystem
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
