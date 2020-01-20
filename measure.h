@@ -107,7 +107,7 @@ private:
 
     unsigned int dlen = 0;
     unsigned int cnt_0=0, cnt_1=0;
-    int intC;
+    int intC=0;
     long double startTime=0; //used to evaluate the intensity
     std::vector<fotone> vf;//used in the function Intensity
     std::vector<fotone> vf_both;//used in the function Intensity contains both channels
