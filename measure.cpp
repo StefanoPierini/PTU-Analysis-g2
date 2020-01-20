@@ -51,18 +51,22 @@ void Measure::MeasureCC(std::string FileName)
     boost::filesystem::path File_int=Append_to_name(File_name,"int");
     boost::filesystem::path File_life=Append_to_name(File_name,"life");
     boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
     File_out.replace_extension(".dat");
     File_int.replace_extension(".dat");
     File_life.replace_extension(".dat");
     File_g2_far.replace_extension(".dat");
+    File_g2_norm.replace_extension(".dat");
     this->File_out=File_out;
     this->File_int=File_int;
     this->File_life=File_life;
     this->File_g2_far=File_g2_far;
+    this->File_g2_norm=File_g2_norm;
     fpout=fopen(File_out.c_str(),"w");
     fint=fopen(File_int.c_str(),"w");
     flife=fopen(File_life.c_str(),"w");
-    f_g2_far=fopen(File_g2_far.c_str(),"w");
+    if (flag_normalization) f_norm=fopen(File_g2_norm.c_str(),"w");
+    if(flag_normalization) f_g2_far=fopen(File_g2_far.c_str(),"w");
 //    std::cout<<"test";
 
     fc1= (fotone*) calloc(g2width,sizeof(fotone)); //fotons recently seen on ch1
@@ -90,8 +94,8 @@ Measure::~Measure(){
    fclose(fpout);
    fclose(flife);
    fclose(fint);
-   fclose(f_g2_far);
-
+   if (flag_normalization) fclose(f_g2_far);
+   if (flag_normalization) fclose(f_norm);
 // free our
    free(fc1);
    free(fc2);
@@ -541,6 +545,7 @@ void Measure::print_histogram(){
       fprintf(fpout,"%d %le %le %lld %lf\n", i,
               (i-bin/2.)*binw, corrTime,
               g2array[i], g2array[i] / mean);
+      if(flag_normalization) fprintf(f_norm,"%d %le %le\n", i, corrTime, g2array[i]/mean);
     }else{
       fprintf(fpout,"%d %le none %lld %lf\n", i,
               (i-bin/2.)*binw,
@@ -1011,7 +1016,7 @@ int Measure::close(){
     fclose(fpout);
     fclose(flife);
     fclose(fint);
-    fclose(f_g2_far);
+    if (flag_normalization) fclose(f_g2_far);
    ex:
     std::this_thread::sleep_for(std::chrono::seconds(1));
 //    sleep(1);

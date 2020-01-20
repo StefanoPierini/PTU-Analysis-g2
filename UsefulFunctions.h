@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <boost/filesystem.hpp>
 
 inline std::string replaceFirstOccurrence(
         std::string& s,
@@ -24,8 +25,10 @@ inline std::vector< std::vector<double> > readIn2dData(const char* filename){
     std::vector< std::vector<double> > table;
     std::fstream ifs;
     /*  open file  */
+    if(!boost::filesystem::exists(filename)){
+        throw "The file does not exists";
+    }
     ifs.open(filename);
-
     while (true)
     {
         bool ok=true;
@@ -75,6 +78,10 @@ inline std::vector<std::vector<double> > trasposeTable(const std::vector<std::ve
         return b;
 
     std::vector<std::vector<double> > trans_vec(b[0].size(), std::vector<double>());
+    for(unsigned i = 0; i<b.size() ;++i){
+        if(b[0].size()!=b[i].size())
+            throw "The number of colums is not constant";
+    }
 
     for (unsigned i = 0; i < b.size(); i++)
     {

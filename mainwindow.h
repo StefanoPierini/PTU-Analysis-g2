@@ -23,9 +23,11 @@ private slots:
     void on_pushButton_clicked();
     void on_pushButton_Analize_clicked();
     void on_pushButton_graphg2_clicked();
+    void on_pushButton_pushButton_g2far_clicked();
     boost::filesystem::path Append_to_name(boost::filesystem::path P, std::string string);
 private:
     Ui::MainWindow *ui;
+    QwtPlotCurve *curveg2;
 };
 
 

@@ -71,7 +71,7 @@ private:
     boost::filesystem::path Append_to_name(boost::filesystem::path P, std::string string);
     FILE *fpin=nullptr;
     FILE *fpout=nullptr;
-    FILE *fint, *flife, *f_g2_far;
+    FILE *fint, *flife, *f_g2_far, *f_norm;
     bool IsT2;
     long long RecNum=0;
     long long oflcorrection=0;
@@ -102,6 +102,7 @@ private:
     boost::filesystem::path File_int;
     boost::filesystem::path File_life;
     boost::filesystem::path File_g2_far;
+    boost::filesystem::path File_g2_norm;
 
 
     unsigned int dlen = 0;
