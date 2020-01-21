@@ -7,6 +7,7 @@
 #include <qwt_plot_curve.h>
 #include <UsefulFunctions.h>
 #include <qwt_scale_engine.h>
+#include <qwt_plot_histogram.h>
 
 
 
@@ -31,9 +32,12 @@ private slots:
     void on_pushButton_plot_lifetime_clicked();
     void on_pushButton_plot_TimeTrace_clicked();
     boost::filesystem::path Append_to_name(boost::filesystem::path P, std::string string);
+    void on_pushButton_plot_FreqHist_clicked();
 private:
     Ui::MainWindow *ui;
     QwtPlotCurve *curveg2, *curveg2far, *curvelifetime, *curveTimeTrace;
+    QwtPlotCurve *curveHistFreq;
+//    QwtPlotHistogram *curveHistFreq;
 };
 
 

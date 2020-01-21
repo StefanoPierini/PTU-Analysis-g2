@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     curveg2far = new QwtPlotCurve("");
     curvelifetime = new QwtPlotCurve("");
     curveTimeTrace= new QwtPlotCurve("");
+    curveHistFreq= new QwtPlotCurve("");
+    //    curveHistFreq=  new QwtPlotHistogram("");
     //    connect(ui->pushButton_Analize, SIGNAL(clicked()),SLOT(on_pushButton_Analize_clicked()));
 
 }
@@ -365,6 +367,86 @@ end:
     nullptr;
 }
 
+void MainWindow::on_pushButton_plot_FreqHist_clicked(){
+    ui->qwtPlot_FreqHist->setTitle("Frequency Histogram plot");
+    if(ui->checkBox_lifetimeLogY->isChecked()) {
+        ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
+    }else{
+        ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+    }
+    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
+    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+    boost::filesystem::path File_int=Append_to_name(File_name,"int");
+    boost::filesystem::path File_life=Append_to_name(File_name,"life");
+    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
+    File_out.replace_extension(".dat");
+    File_int.replace_extension(".dat");
+    File_life.replace_extension(".dat");
+    File_g2_far.replace_extension(".dat");
+    File_g2_norm.replace_extension(".dat");
+
+//    if(!boost::filesystem::exists(File_out)){
+//        goto end;
+//    }
+    {
+        curveHistFreq->detach();
+        try{
+            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_int.c_str()));
+            std::vector<std::vector<double>> data_toplot;
+
+            //        QwtPlotCurve *curveg2 = new QwtPlotCurve("");
+
+            curveHistFreq->setPen(Qt::blue,4);
+
+            for (unsigned int i = 0; i < datas[0].size(); ++i) {
+                std::vector<double> vec;
+                if(datas[1][i]>0){ //removes zero element at the end
+                    vec.push_back(datas[0][i]);
+                    vec.push_back(datas[1][i]);
+                    data_toplot.push_back(vec);
+                }
+
+            }
+            data_toplot.pop_back(); //removes the last element that normally has some problem
+            data_toplot=trasposeTable(data_toplot);
+            QVector<double> datax= QVector<double>::fromStdVector(data_toplot[0]);
+            QVector<double> datay= QVector<double>::fromStdVector(data_toplot[1]);
+            //this time I whant to create an histogram
+            double ymax=0;
+            for (double val : datay) {
+                if(val>ymax) ymax=val;
+            }
+            QVector<double> histogram = *new QVector<double>(int(ymax),0);
+            QVector<double> counts = *new QVector<double>(int(ymax),0);
+
+            for(double val : datay){
+                int valint = int(val);
+                if(valint>0) histogram[valint-1]+=1;
+            }
+            for (int i = 0; i < counts.size(); ++i) {
+                counts[i] =double(i);
+            }
+
+            curveHistFreq->setSamples(counts,histogram);
+//            curveHistFreq->setSamples(datay);
+            curveHistFreq->attach(ui->qwtPlot_FreqHist);
+            ui->qwtPlot_FreqHist->setAxisTitle(QwtPlot::Axis::xBottom,"counts");
+            ui->qwtPlot_FreqHist->setAxisTitle(QwtPlot::Axis::yLeft,"frequencies");
+            ui->qwtPlot_FreqHist->replot();
+        } catch (const char* msg) {
+            QMessageBox msgBox;
+            msgBox.setText("An exception occurred:");
+            msgBox.setInformativeText(msg);
+            msgBox.exec();
+            goto end;
+        }
+    }
+    //        curveg2=curve1;
+end:
+    nullptr;
+}
 
 
 

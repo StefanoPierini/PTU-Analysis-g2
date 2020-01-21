@@ -6,7 +6,9 @@
 #include <thread>
 #include <stdio.h>
 #include <boost/filesystem.hpp>
-#include "gnuplot-iostream.h"
+//#include "gnuplot-iostream.h"
+
+#include <iostream>
 
 // some important Tag Idents (TTagHead.Ident) that we will need to read the most common content of a PTU file
 // check the output of this program and consult the tag dictionary if you need more
@@ -123,7 +125,7 @@ private:
     std::vector<int> lifeTime_hist;
     double probT; // probability that a given pulse appen at a given time
     float T=0.5; //Transmission ratio of the BS
-    Gnuplot gp; //gnuplot istance
+//    Gnuplot gp; //gnuplot istance
     //**********************
     //under this line, attributes to be initialized when the object is created
     //**********************

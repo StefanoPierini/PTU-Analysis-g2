@@ -32,7 +32,6 @@ SOURCES += \
 
 HEADERS += \
         UsefulFunctions.h \
-        gnuplot-iostream.h \
         mainwindow.h \
         measure.h
 

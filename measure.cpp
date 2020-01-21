@@ -1,5 +1,4 @@
 #include "measure.h"
-#include <iostream>
 
 
 
@@ -574,32 +573,17 @@ void Measure::print_histogram(){
         //>>>>>>> parent of 526d7db... Revert "first adding gnuplot functionalities"
     }
 
-    // for(std::vector<int>::size_type i=0;i<lifeTime_hist.size();i++){
-    //   if(lifeTime_hist[i]<=0){
-    //     lifeTime_hist.erase( lifeTime_hist.begin()+i);
-    //     tempo.erase(tempo.begin()+i);
-    //     i--;
-    //   }
-    //   lifeTime_hist.pop_back();
-    //   tempo.pop_back();
 
-    // }
-    //char *gpfile1, *gpfile2, *gpfile3;
 
-    gp<<"file1='" << std::string(File_out.c_str())<<"'\n";
-    gp<<"file2='" << std::string(File_int.c_str())<<"'\n";
-    gp<<"file3='" << std::string(File_life.c_str())<<"'\n";
+//    gp<<"file1='" << std::string(File_out.c_str())<<"'\n";
+//    gp<<"file2='" << std::string(File_int.c_str())<<"'\n";
+//    gp<<"file3='" << std::string(File_life.c_str())<<"'\n";
 
-    //  gp<<"file4='" << std::string(gpfile4)<<"'\n";
-    //gp<<"set fit quiet\n";
-    gp<<"l '/home/pierinis/Documenti/Dottorato/DatiParigi/Codici/Qt_analisi/Analisi/script_fit2.gpt'\n";
-    gp<<"\n";
-    gp.flush();
-    //  gp << "set logscale y\n";
-    // gp << "plot '-' w l title 'lifetime'\n";
-    // std::vector<double> tempi;
-    //std::transform(tempo.begin(),tempo.end(),tempi.begin(),)
-    // gp.send1d(boost::make_tuple(tempo,lifeTime_hist));
+
+//    gp<<"l '/home/pierinis/Documenti/Dottorato/DatiParigi/Codici/Qt_analisi/Analisi/script_fit2.gpt'\n";
+//    gp<<"\n";
+//    gp.flush();
+
 
 }
 
