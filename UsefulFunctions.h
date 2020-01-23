@@ -5,7 +5,8 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <boost/filesystem.hpp>
+#include <QFileInfo>
+//#include <boost/filesystem.hpp>
 
 inline std::string replaceFirstOccurrence(
         std::string& s,
@@ -17,7 +18,7 @@ inline std::string replaceFirstOccurrence(
         return s.replace(pos, toReplace.length(), replaceWith);
     }
 
-inline std::vector< std::vector<double> > readIn2dData(const char* filename){
+inline std::vector< std::vector<double> > readIn2dData(QFileInfo filename){
     /* Function takes a char* filename argument and returns a
      * 2d dynamic array containing the data
      */
@@ -25,10 +26,13 @@ inline std::vector< std::vector<double> > readIn2dData(const char* filename){
     std::vector< std::vector<double> > table;
     std::fstream ifs;
     /*  open file  */
-    if(!boost::filesystem::exists(filename)){
+    if(!filename.exists()){
         throw "The file does not exists";
     }
-    ifs.open(filename);
+    if(!filename.isFile()){
+        throw "The path does not correspond to a file";
+    }
+    ifs.open(filename.absoluteFilePath().toStdString().c_str());
     while (true)
     {
         bool ok=true;

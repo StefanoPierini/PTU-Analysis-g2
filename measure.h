@@ -6,9 +6,12 @@
 #include <thread>
 #include <stdio.h>
 #include <boost/filesystem.hpp>
+#include <QFileInfo>
+#include <QDir>
 //#include "gnuplot-iostream.h"
 
 #include <iostream>
+#include <QCoreApplication>
 
 // some important Tag Idents (TTagHead.Ident) that we will need to read the most common content of a PTU file
 // check the output of this program and consult the tag dictionary if you need more
@@ -70,7 +73,6 @@ public:
     //Definitions by Stefano Pierini
 
 private:
-    boost::filesystem::path Append_to_name(boost::filesystem::path P, std::string string);
     FILE *fpin=nullptr;
     FILE *fpout=nullptr;
     FILE *fint, *flife, *f_g2_far, *f_norm;
@@ -100,11 +102,14 @@ private:
     std::vector <std::pair<double, long int>> get_g2_max_vector(long long int *g2array_far);
     void LifeTime(fotone f1, int soglia);
     void print_histogram();
-    boost::filesystem::path File_out;
-    boost::filesystem::path File_int;
-    boost::filesystem::path File_life;
-    boost::filesystem::path File_g2_far;
-    boost::filesystem::path File_g2_norm;
+    QFileInfo Append_to_name(QFileInfo P, QString string);
+
+
+    QFileInfo File_out;
+    QFileInfo File_int;
+    QFileInfo File_life;
+    QFileInfo File_g2_far;
+    QFileInfo File_g2_norm;
 
 
     unsigned int dlen = 0;
@@ -139,6 +144,7 @@ private:
     double altAt=0;
     int sON=0; //soglia per considerare lo stato ON
 //    int sOFF; //soglia per considerare lo stato OFF
+
 
 
 };

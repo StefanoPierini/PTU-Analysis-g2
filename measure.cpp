@@ -44,28 +44,35 @@ void Measure::MeasureCC(std::string FileName)
 {
     this->FileName=FileName;
     fpin=fopen(FileName.c_str(),"r");
-    boost::filesystem::path File_name=boost::filesystem::path(FileName);
-
-    boost::filesystem::path File_out=Append_to_name(File_name,"out");
-    boost::filesystem::path File_int=Append_to_name(File_name,"int");
-    boost::filesystem::path File_life=Append_to_name(File_name,"life");
-    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
-    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
-    File_out.replace_extension(".dat");
-    File_int.replace_extension(".dat");
-    File_life.replace_extension(".dat");
-    File_g2_far.replace_extension(".dat");
-    File_g2_norm.replace_extension(".dat");
+    QFileInfo File_Name= *new QFileInfo(QString::fromStdString(FileName));
+    QFileInfo File_out=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_out.dat";
+    QFileInfo File_int=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_int.dat";
+    QFileInfo File_life=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_life.dat";
+    QFileInfo File_g2_far=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_far.dat";
+    QFileInfo File_g2_norm=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_norm.dat";
+    //    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+    //    QFileInfo File_out= Append_to_name(File_Name,"out");
+    //    File_out= QFileInfo(File_out.canonicalFilePath()+QDir::separator()+File_out.baseName()+".dat");
+    ////    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+    //    QFileInfo File_int=Append_to_name(File_Name,"int");
+    //    File_int=File_int.canonicalFilePath()+QDir::separator()+File_int.baseName()+".dat";
+    ////    QFileInfo File_life=Append_to_name(File_name,"life");
+    //    File_out.replace_extension(".dat");
+    //    File_int.replace_extension(".dat");
+    //    File_life.replace_extension(".dat");
+    //    File_g2_far.replace_extension(".dat");
+    //    File_g2_norm.replace_extension(".dat");
     this->File_out=File_out;
     this->File_int=File_int;
     this->File_life=File_life;
     this->File_g2_far=File_g2_far;
     this->File_g2_norm=File_g2_norm;
-    fpout=fopen(File_out.c_str(),"w");
-    fint=fopen(File_int.c_str(),"w");
-    flife=fopen(File_life.c_str(),"w");
-    if (flag_normalization) f_norm=fopen(File_g2_norm.c_str(),"w");
-    if(flag_normalization) f_g2_far=fopen(File_g2_far.c_str(),"w");
+    QString appoggio=File_out.absoluteFilePath();
+    fpout=fopen(File_out.absoluteFilePath().toStdString().c_str(),"w");
+    fint=fopen(File_int.absoluteFilePath().toStdString().c_str(),"w");
+    flife=fopen(File_life.absoluteFilePath().toStdString().c_str(),"w");
+    if (flag_normalization) f_norm=fopen(File_g2_norm.absoluteFilePath().toStdString().c_str(),"w");
+    if(flag_normalization) f_g2_far=fopen(File_g2_far.absoluteFilePath().toStdString().c_str(),"w");
     //    std::cout<<"test";
 
     fc1= (fotone*) calloc(g2width,sizeof(fotone)); //fotons recently seen on ch1
@@ -116,11 +123,13 @@ Measure::~Measure(){
     //exit(0);
 }
 
-boost::filesystem::path Measure::Append_to_name(boost::filesystem::path P, std::string string)
+QFileInfo Measure::Append_to_name(QFileInfo P, QString string)
 {
-    std::string rndString = string;
-    boost::filesystem::path newPath = P.parent_path() / boost::filesystem::path(P.stem().string() + "_" + rndString + P.extension().string());
-    return newPath;
+    QString newname = string;
+    newname=P.baseName()+string;
+    QString newPath = P.canonicalPath()+QDir::separator()+newname+"."+P.suffix();
+
+    return *new QString(newPath);
 }
 
 time_t Measure::TDateTime_TimeT(double Convertee)
@@ -201,7 +210,7 @@ void Measure::GotPhoton(long long TimeTag, int Channel, int DTime)
     }
     else
     {
-        //      fprintf(fpout,"#%I64u CHN %1x %I64u %8.0lf %10u\n", RecNum, Channel, TimeTag, (TimeTag * GlobRes * 1e9), DTime);
+        //fprintf(fpout,"#%I64u CHN %1x %I64u %8.0lf %10u\n", RecNum, Channel, TimeTag, (TimeTag * GlobRes * 1e9), DTime);
         fotone f={
             .RecNum=RecNum,
             .Channel=Channel,
@@ -344,6 +353,7 @@ void Measure::CreateFarG2(fotone f){
      consider any peak but only one peak over some.
    */
     //  int g2width_far=10000;
+//    QCoreApplication::processEvents();
     int g2red_far=5; //only one peak over 10 is used
     ic1_far=ic1_far%g2width_far;//channel 1 renormalize to the array size
     ic2_far=ic2_far%g2width_far;//channel 2 renormalize to the array size

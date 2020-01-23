@@ -1,10 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "measure.h"
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QIntValidator>
-#include <QDoubleValidator>
+
 //#include <iostream>
 
 
@@ -139,18 +136,18 @@ end:
 
 void MainWindow::on_pushButton_graphg2_clicked() {
     ui->qwtPlot_g2->setTitle("g2 plot");
-    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
-    boost::filesystem::path File_name=boost::filesystem::path(FileName);
-    boost::filesystem::path File_out=Append_to_name(File_name,"out");
-    boost::filesystem::path File_int=Append_to_name(File_name,"int");
-    boost::filesystem::path File_life=Append_to_name(File_name,"life");
-    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
-    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
-    File_out.replace_extension(".dat");
-    File_int.replace_extension(".dat");
-    File_life.replace_extension(".dat");
-    File_g2_far.replace_extension(".dat");
-    File_g2_norm.replace_extension(".dat");
+//    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
+//    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+//    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+//    boost::filesystem::path File_int=Append_to_name(File_name,"int");
+//    boost::filesystem::path File_life=Append_to_name(File_name,"life");
+//    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+//    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
+//    File_out.replace_extension(".dat");
+//    File_int.replace_extension(".dat");
+//    File_life.replace_extension(".dat");
+//    File_g2_far.replace_extension(".dat");
+//    File_g2_norm.replace_extension(".dat");
 
 //    if(!boost::filesystem::exists(File_out)){
 //        goto end;
@@ -158,7 +155,7 @@ void MainWindow::on_pushButton_graphg2_clicked() {
     {
         curveg2->detach();
         try{
-            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_out.c_str()));
+            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_out));
 
             //        QwtPlotCurve *curveg2 = new QwtPlotCurve("");
 
@@ -187,23 +184,23 @@ end:
 void MainWindow::on_pushButton_g2far_clicked(){
     ui->qwtPlot_g2far->setTitle("g2 plot");
     ui->qwtPlot_g2far->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine(10));
-    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
-    boost::filesystem::path File_name=boost::filesystem::path(FileName);
-    boost::filesystem::path File_out=Append_to_name(File_name,"out");
-    boost::filesystem::path File_int=Append_to_name(File_name,"int");
-    boost::filesystem::path File_life=Append_to_name(File_name,"life");
-    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
-    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
-    File_out.replace_extension(".dat");
-    File_int.replace_extension(".dat");
-    File_life.replace_extension(".dat");
-    File_g2_far.replace_extension(".dat");
-    File_g2_norm.replace_extension(".dat");
+//    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
+//    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+//    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+//    boost::filesystem::path File_int=Append_to_name(File_name,"int");
+//    boost::filesystem::path File_life=Append_to_name(File_name,"life");
+//    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+//    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
+//    File_out.replace_extension(".dat");
+//    File_int.replace_extension(".dat");
+//    File_life.replace_extension(".dat");
+//    File_g2_far.replace_extension(".dat");
+//    File_g2_norm.replace_extension(".dat");
 
     {
         curveg2far->detach();
         try{
-            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_g2_far.c_str()));
+            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_g2_far));
             std::vector<std::vector<double>> data_toplot;
 
             curveg2far->setPen(Qt::blue,4);
@@ -240,23 +237,24 @@ end:
 
 void MainWindow::on_pushButton_plot_lifetime_clicked(){
     ui->qwtPlot_lifetime->setTitle("g2 plot");
+    set_file_names();
     if(ui->checkBox_lifetimeLogY->isChecked()) {
         ui->qwtPlot_lifetime->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
     }else{
         ui->qwtPlot_lifetime->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
     }
     std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
-    boost::filesystem::path File_name=boost::filesystem::path(FileName);
-    boost::filesystem::path File_out=Append_to_name(File_name,"out");
-    boost::filesystem::path File_int=Append_to_name(File_name,"int");
-    boost::filesystem::path File_life=Append_to_name(File_name,"life");
-    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
-    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
-    File_out.replace_extension(".dat");
-    File_int.replace_extension(".dat");
-    File_life.replace_extension(".dat");
-    File_g2_far.replace_extension(".dat");
-    File_g2_norm.replace_extension(".dat");
+//    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+//    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+//    boost::filesystem::path File_int=Append_to_name(File_name,"int");
+//    boost::filesystem::path File_life=Append_to_name(File_name,"life");
+//    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+//    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
+//    File_out.replace_extension(".dat");
+//    File_int.replace_extension(".dat");
+//    File_life.replace_extension(".dat");
+//    File_g2_far.replace_extension(".dat");
+//    File_g2_norm.replace_extension(".dat");
 
 //    if(!boost::filesystem::exists(File_out)){
 //        goto end;
@@ -264,7 +262,7 @@ void MainWindow::on_pushButton_plot_lifetime_clicked(){
     {
         curvelifetime->detach();
         try{
-            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_life.c_str()));
+            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_life));
             std::vector<std::vector<double>> data_toplot;
 
             //        QwtPlotCurve *curveg2 = new QwtPlotCurve("");
@@ -305,23 +303,24 @@ end:
 
 void MainWindow::on_pushButton_plot_TimeTrace_clicked(){
     ui->qwtPlot_TimeTrace->setTitle("Time trace plot");
+    set_file_names();
     if(ui->checkBox_lifetimeLogY->isChecked()) {
         ui->qwtPlot_TimeTrace->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
     }else{
         ui->qwtPlot_TimeTrace->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
     }
     std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
-    boost::filesystem::path File_name=boost::filesystem::path(FileName);
-    boost::filesystem::path File_out=Append_to_name(File_name,"out");
-    boost::filesystem::path File_int=Append_to_name(File_name,"int");
-    boost::filesystem::path File_life=Append_to_name(File_name,"life");
-    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
-    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
-    File_out.replace_extension(".dat");
-    File_int.replace_extension(".dat");
-    File_life.replace_extension(".dat");
-    File_g2_far.replace_extension(".dat");
-    File_g2_norm.replace_extension(".dat");
+//    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+//    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+//    boost::filesystem::path File_int=Append_to_name(File_name,"int");
+//    boost::filesystem::path File_life=Append_to_name(File_name,"life");
+//    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+//    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
+//    File_out.replace_extension(".dat");
+//    File_int.replace_extension(".dat");
+//    File_life.replace_extension(".dat");
+//    File_g2_far.replace_extension(".dat");
+//    File_g2_norm.replace_extension(".dat");
 
 //    if(!boost::filesystem::exists(File_out)){
 //        goto end;
@@ -329,7 +328,7 @@ void MainWindow::on_pushButton_plot_TimeTrace_clicked(){
     {
         curveTimeTrace->detach();
         try{
-            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_int.c_str()));
+            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_int));
             std::vector<std::vector<double>> data_toplot;
 
             //        QwtPlotCurve *curveg2 = new QwtPlotCurve("");
@@ -369,23 +368,24 @@ end:
 
 void MainWindow::on_pushButton_plot_FreqHist_clicked(){
     ui->qwtPlot_FreqHist->setTitle("Frequency Histogram plot");
+    set_file_names();
     if(ui->checkBox_lifetimeLogY->isChecked()) {
         ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
     }else{
         ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
     }
-    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
-    boost::filesystem::path File_name=boost::filesystem::path(FileName);
-    boost::filesystem::path File_out=Append_to_name(File_name,"out");
-    boost::filesystem::path File_int=Append_to_name(File_name,"int");
-    boost::filesystem::path File_life=Append_to_name(File_name,"life");
-    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
-    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
-    File_out.replace_extension(".dat");
-    File_int.replace_extension(".dat");
-    File_life.replace_extension(".dat");
-    File_g2_far.replace_extension(".dat");
-    File_g2_norm.replace_extension(".dat");
+//    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
+//    boost::filesystem::path File_name=boost::filesystem::path(FileName);
+//    boost::filesystem::path File_out=Append_to_name(File_name,"out");
+//    boost::filesystem::path File_int=Append_to_name(File_name,"int");
+//    boost::filesystem::path File_life=Append_to_name(File_name,"life");
+//    boost::filesystem::path File_g2_far=Append_to_name(File_name,"g2_far");
+//    boost::filesystem::path File_g2_norm=Append_to_name(File_name,"g2_norm");
+//    File_out.replace_extension(".dat");
+//    File_int.replace_extension(".dat");
+//    File_life.replace_extension(".dat");
+//    File_g2_far.replace_extension(".dat");
+//    File_g2_norm.replace_extension(".dat");
 
 //    if(!boost::filesystem::exists(File_out)){
 //        goto end;
@@ -393,7 +393,7 @@ void MainWindow::on_pushButton_plot_FreqHist_clicked(){
     {
         curveHistFreq->detach();
         try{
-            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_int.c_str()));
+            std::vector< std::vector<double> > datas = trasposeTable(readIn2dData(File_int));
             std::vector<std::vector<double>> data_toplot;
 
             //        QwtPlotCurve *curveg2 = new QwtPlotCurve("");
@@ -448,11 +448,19 @@ end:
     nullptr;
 }
 
-
-
-boost::filesystem::path MainWindow::Append_to_name(boost::filesystem::path P, std::string string)
-{
-    std::string rndString = string;
-    boost::filesystem::path newPath = P.parent_path() / boost::filesystem::path(P.stem().string() + "_" + rndString + P.extension().string());
-    return newPath;
+void MainWindow::set_file_names(){
+    QFileInfo File_Name= *new QFileInfo(ui->textEdit_fileName->toPlainText());
+//    QFileInfo File_Name= *new QFileInfo(QString::fromStdString(FileName));
+    File_out=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_out.dat";
+    File_int=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_int.dat";
+    File_life=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_life.dat";
+    File_g2_far=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_far.dat";
+    File_g2_norm=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_norm.dat";
 }
+
+//boost::filesystem::path MainWindow::Append_to_name(boost::filesystem::path P, std::string string)
+//{
+//    std::string rndString = string;
+//    boost::filesystem::path newPath = P.parent_path() / boost::filesystem::path(P.stem().string() + "_" + rndString + P.extension().string());
+//    return newPath;
+//}
