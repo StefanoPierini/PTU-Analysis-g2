@@ -5,13 +5,14 @@
 #include <chrono>
 #include <thread>
 #include <stdio.h>
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 #include <QFileInfo>
 #include <QDir>
 //#include "gnuplot-iostream.h"
 
 #include <iostream>
 #include <QCoreApplication>
+#include <cstdlib>
 
 // some important Tag Idents (TTagHead.Ident) that we will need to read the most common content of a PTU file
 // check the output of this program and consult the tag dictionary if you need more

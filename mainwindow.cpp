@@ -136,6 +136,7 @@ end:
 
 void MainWindow::on_pushButton_graphg2_clicked() {
     ui->qwtPlot_g2->setTitle("g2 plot");
+    set_file_names();
 //    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
 //    boost::filesystem::path File_name=boost::filesystem::path(FileName);
 //    boost::filesystem::path File_out=Append_to_name(File_name,"out");
@@ -182,6 +183,7 @@ end:
 
 
 void MainWindow::on_pushButton_g2far_clicked(){
+    set_file_names();
     ui->qwtPlot_g2far->setTitle("g2 plot");
     ui->qwtPlot_g2far->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine(10));
 //    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
@@ -304,11 +306,11 @@ end:
 void MainWindow::on_pushButton_plot_TimeTrace_clicked(){
     ui->qwtPlot_TimeTrace->setTitle("Time trace plot");
     set_file_names();
-    if(ui->checkBox_lifetimeLogY->isChecked()) {
-        ui->qwtPlot_TimeTrace->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
-    }else{
-        ui->qwtPlot_TimeTrace->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
-    }
+//    if(ui->checkBox_lifetimeLogY->isChecked()) {
+//        ui->qwtPlot_TimeTrace->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
+//    }else{
+//        ui->qwtPlot_TimeTrace->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+//    }
     std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
 //    boost::filesystem::path File_name=boost::filesystem::path(FileName);
 //    boost::filesystem::path File_out=Append_to_name(File_name,"out");
@@ -369,11 +371,11 @@ end:
 void MainWindow::on_pushButton_plot_FreqHist_clicked(){
     ui->qwtPlot_FreqHist->setTitle("Frequency Histogram plot");
     set_file_names();
-    if(ui->checkBox_lifetimeLogY->isChecked()) {
-        ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
-    }else{
-        ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
-    }
+//    if(ui->checkBox_lifetimeLogY->isChecked()) {
+//        ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine(10));
+//    }else{
+//        ui->qwtPlot_FreqHist->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine());
+//    }
 //    std::string FileName = ui->textEdit_fileName->toPlainText().toStdString();
 //    boost::filesystem::path File_name=boost::filesystem::path(FileName);
 //    boost::filesystem::path File_out=Append_to_name(File_name,"out");
