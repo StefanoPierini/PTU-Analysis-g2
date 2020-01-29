@@ -55,6 +55,7 @@ void MainWindow::on_pushButton_Analize_clicked()
     int g2width=10;
     double altAt=0;
     double intTime=0.01;
+    int binNum=50;
 
     if(ui->radioButton_ch1->isChecked()){
         MC=1;
@@ -121,8 +122,16 @@ void MainWindow::on_pushButton_Analize_clicked()
         goto end;
     }
 
+    if(ui->lineEdit_BinForPulse->text().toInt()>0){
+        binNum=ui->lineEdit_BinForPulse->text().toInt();
+    }else{
+        QMessageBox msgBox;
+        msgBox.setText("Number of bins must bigger than 0");
+        msgBox.exec();
+        goto end;
+    }
+
     {
-        int binNum=50;
         Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime);
         //      Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), int MC, int flag_normalization, int sogliaGlob, int binNum, double altAt,int sON);
         delete M;
