@@ -5,14 +5,18 @@
 //#include <boost/filesystem.hpp>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
+#include <qwt_plot_grid.h>
 #include <UsefulFunctions.h>
 #include <qwt_scale_engine.h>
 #include <qwt_plot_histogram.h>
+//#include <qwt_plot_picker.h>
 #include <QFileInfo>
+#include <qstring.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QIntValidator>
 #include <QDoubleValidator>
+#include <QClipboard>
 
 
 
@@ -38,11 +42,13 @@ private slots:
     void on_pushButton_plot_TimeTrace_clicked();
 //    boost::filesystem::path Append_to_name(boost::filesystem::path P, std::string string);
     void on_pushButton_plot_FreqHist_clicked();
+    void on_pushButton_graphg2_n_clicked();
 
 private:
     Ui::MainWindow *ui;
-    QwtPlotCurve *curveg2, *curveg2far, *curvelifetime, *curveTimeTrace;
+    QwtPlotCurve *curveg2, *curveg2far, *curvelifetime, *curveTimeTrace, *curveg2_n;
     QwtPlotCurve *curveHistFreq;
+    QwtPlotGrid *grid;
     //    QwtPlotHistogram *curveHistFreq;
     void set_file_names();
 

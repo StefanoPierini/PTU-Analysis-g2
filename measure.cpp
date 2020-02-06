@@ -43,7 +43,7 @@ Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogli
 void Measure::MeasureCC(std::string FileName)
 {
     this->FileName=FileName;
-    fpin=fopen(FileName.c_str(),"r");
+    fpin=fopen(FileName.c_str(),"rb");
     QFileInfo File_Name= *new QFileInfo(QString::fromStdString(FileName));
     QFileInfo File_out=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_out.dat";
     QFileInfo File_int=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_int.dat";
@@ -135,7 +135,7 @@ QFileInfo Measure::Append_to_name(QFileInfo P, QString string)
 time_t Measure::TDateTime_TimeT(double Convertee)
 {
     const int EpochDiff = 25569; // days between 30/12/1899 and 01/01/1970
-    const int SecsInDay = 86400; // number of seconds in a day
+    const long SecsInDay = 86400; // number of seconds in a day
 
     time_t Result((long)(((Convertee) - EpochDiff) * SecsInDay));
     return Result;
@@ -144,10 +144,10 @@ time_t Measure::TDateTime_TimeT(double Convertee)
 
 void Measure::ProcessPHT3(unsigned int TTTRRecord)
 {
-    const int T3WRAPAROUND = 65536;
+    const long T3WRAPAROUND = 65536;
     union
     {
-        unsigned int allbits;
+        unsigned long allbits;
         struct
         {
             unsigned numsync  :16;
@@ -771,7 +771,8 @@ int Measure::readHeader()
     char Version[8];
     char Buffer[40];
     char* AnsiBuffer;
-    wchar_t* WideBuffer;
+//    wchar_t* WideBuffer;
+    char32_t* WideBuffer;
     long long NumRecords = -1;
     long long RecordType = 0;
 
@@ -872,7 +873,7 @@ int Measure::readHeader()
             free(AnsiBuffer);
             break;
         case tyWideString:
-            WideBuffer = (wchar_t*)calloc((size_t)TagHead.TagValue,1);
+            WideBuffer = (char32_t*)calloc((size_t)TagHead.TagValue,1);
             Result = fread(WideBuffer, 1, (size_t)TagHead.TagValue, fpin);
             if (Result!= TagHead.TagValue)
             {
@@ -948,7 +949,9 @@ int Measure::readHeader()
     lifeTime_hist.reserve(static_cast<unsigned long>(GlobRes/Resolution)+100);
     lifeTime_hist.assign(static_cast<unsigned long>(GlobRes/Resolution)+100,0);
 
-    unsigned int TTTRRecord;
+//    unsigned int TTTRRecord;
+    uint32_t TTTRRecord;
+//    std::cout<<"unsigned int size: " << sizeof (uint32_t)<<"\n";
 
     for(RecNum=0;RecNum<NumRecords;RecNum++)
     {
