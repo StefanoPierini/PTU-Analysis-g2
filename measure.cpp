@@ -949,6 +949,7 @@ int Measure::readHeader()
     lifeTime_hist.reserve(static_cast<unsigned long>(GlobRes/Resolution)+100);
     lifeTime_hist.assign(static_cast<unsigned long>(GlobRes/Resolution)+100,0);
 
+
 //    unsigned int TTTRRecord;
     uint32_t TTTRRecord;
 //    std::cout<<"unsigned int size: " << sizeof (uint32_t)<<"\n";

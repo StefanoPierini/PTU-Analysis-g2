@@ -38,7 +38,7 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
-LIBS += -lboost_iostreams -lboost_system -lboost_filesystem
+#LIBS += -lboost_iostreams -lboost_system -lboost_filesystem
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

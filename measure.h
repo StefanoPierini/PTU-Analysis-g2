@@ -129,6 +129,7 @@ private:
     long int Non=0,Noff=0;
     double binw;
     std::vector<int> lifeTime_hist;
+//    std::vector<std::vector<int>> lifetime_matrix;
     double probT; // probability that a given pulse appen at a given time
     float T=0.5; //Transmission ratio of the BS
 //    Gnuplot gp; //gnuplot istance

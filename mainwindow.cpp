@@ -375,6 +375,7 @@ end:
     nullptr;
 }
 
+
 void MainWindow::on_pushButton_graphg2_n_clicked()
 {
     ui->qwtPlot_g2_n->setTitle("Frequency Histogram plot");
@@ -425,6 +426,9 @@ void MainWindow::on_pushButton_graphg2_n_clicked()
             grid->setMajorPen(QPen(Qt::DotLine));
             grid->attach(ui->qwtPlot_g2_n);
             ui->qwtPlot_g2_n->replot();
+            QFileInfo File_Name= *new QFileInfo(ui->textEdit_fileName->toPlainText());
+            pdf_g2_norm=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_norm.pdf";
+            ui->pushButton_g2nSave->setEnabled(true);
         } catch (const char* msg) {
             QMessageBox msgBox;
             msgBox.setText("An exception occurred:");
@@ -432,7 +436,12 @@ void MainWindow::on_pushButton_graphg2_n_clicked()
             msgBox.exec();
         }
     }
+}
 
+void MainWindow::on_pushButton_g2nSave_clicked()
+{
+    QwtPlotRenderer *render=new QwtPlotRenderer();
+    render->renderDocument(ui->qwtPlot_g2_n,pdf_g2_norm.filePath(),"pdf",QSizeF(100,80));
 }
 
 void MainWindow::set_file_names(){
@@ -443,6 +452,7 @@ void MainWindow::set_file_names(){
     File_life=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_life.dat";
     File_g2_far=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_far.dat";
     File_g2_norm=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_norm.dat";
+
 }
 
 

@@ -11,13 +11,14 @@
 #include <qwt_plot_histogram.h>
 //#include <qwt_plot_picker.h>
 #include <QFileInfo>
+#include <QSizeF>
 #include <qstring.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QIntValidator>
 #include <QDoubleValidator>
 #include <QClipboard>
-
+#include <qwt_plot_renderer.h>
 
 
 namespace Ui {
@@ -43,7 +44,7 @@ private slots:
 //    boost::filesystem::path Append_to_name(boost::filesystem::path P, std::string string);
     void on_pushButton_plot_FreqHist_clicked();
     void on_pushButton_graphg2_n_clicked();
-
+    void on_pushButton_g2nSave_clicked();
 private:
     Ui::MainWindow *ui;
     QwtPlotCurve *curveg2, *curveg2far, *curvelifetime, *curveTimeTrace, *curveg2_n;
@@ -57,7 +58,7 @@ private:
     QFileInfo File_int;
     QFileInfo File_life;
     QFileInfo File_g2_far;
-    QFileInfo File_g2_norm;
+    QFileInfo File_g2_norm, pdf_g2_norm;
 };
 
 
