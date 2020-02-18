@@ -4,7 +4,6 @@
 
 Measure::Measure(std::string FileName){
     this->MeasureCC(FileName);
-
 }
 /**
  * @brief Measure::Measure
@@ -32,7 +31,7 @@ Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogli
         this->intTime=intTime;
     }
     this->MeasureCC(FileName);
-
+//    lifeMatrix= *new Lifetime_matrix(0,0);
 }
 
 /**
@@ -50,6 +49,7 @@ void Measure::MeasureCC(std::string FileName)
     QFileInfo File_life=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_life.dat";
     QFileInfo File_g2_far=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_far.dat";
     QFileInfo File_g2_norm=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_norm.dat";
+    File_life_matrix=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_lifeMatrix.dat";
     //    boost::filesystem::path File_name=boost::filesystem::path(FileName);
     //    QFileInfo File_out= Append_to_name(File_Name,"out");
     //    File_out= QFileInfo(File_out.canonicalFilePath()+QDir::separator()+File_out.baseName()+".dat");
@@ -380,7 +380,6 @@ void Measure::CreateFarG2(fotone f){
         oca=fc2_far;
         ica=ic2_far-1;//the last that was filled
     }
-
     if(Channel==2){
         fc2_far[ic2_far].RecNum=RecNum;
         fc2_far[ic2_far].Channel=Channel;
@@ -475,8 +474,9 @@ void Measure::LifeTime(fotone f1, int soglia){
         return;
     }
     if(((f1.intensity*sign) >= soglia) and (f1.Channel==MC)){
-        lifeTime_hist.at(f1.Dtime)++;
+        lifeTime_hist.at(static_cast<std::vector<int>::size_type> (f1.Dtime))++;
     }
+    if(f1.Channel==MC) lifeMatrix.add_count(static_cast<uint>(f1.intensity), static_cast<uint>(f1.Dtime));
 }
 
 void Measure::print_histogram(){
@@ -582,7 +582,8 @@ void Measure::print_histogram(){
         tempo.push_back(i*Resolution*1e6);
         //>>>>>>> parent of 526d7db... Revert "first adding gnuplot functionalities"
     }
-
+    lifeMatrix.bin_time_width=Resolution;
+    lifeMatrix.save(File_life_matrix);
 
 
 //    gp<<"file1='" << std::string(File_out.c_str())<<"'\n";
@@ -596,7 +597,6 @@ void Measure::print_histogram(){
 
 
 }
-
 
 void Measure::ProcessPHT2(unsigned int TTTRRecord)
 {
@@ -713,7 +713,6 @@ void Measure::ProcessHHT2(unsigned int TTTRRecord, int HHVersion)
 
 }
 
-
 void Measure::ProcessHHT3(unsigned int TTTRRecord, int HHVersion)
 {
     const int T3WRAPAROUND = 1024;
@@ -761,8 +760,6 @@ void Measure::ProcessHHT3(unsigned int TTTRRecord, int HHVersion)
         GotPhoton(truensync, c, m);
     }
 }
-
-
 
 int Measure::readHeader()
 {
@@ -1005,7 +1002,6 @@ close:
     close();
     return 0;
 }
-
 
 int Measure::close(){
 close:

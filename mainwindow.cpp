@@ -378,7 +378,7 @@ end:
 
 void MainWindow::on_pushButton_graphg2_n_clicked()
 {
-    ui->qwtPlot_g2_n->setTitle("Frequency Histogram plot");
+    ui->qwtPlot_g2_n->setTitle("Normalized g2 plot");
     double x0=ui->lineEdit_g2norm_x0->text().toDouble();
     double interval=1e-7;
     double g2_0=0, min_curve=1;

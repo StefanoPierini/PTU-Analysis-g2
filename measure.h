@@ -13,6 +13,7 @@
 #include <iostream>
 #include <QCoreApplication>
 #include <cstdlib>
+#include <lifetime_matrix.h>
 
 // some important Tag Idents (TTagHead.Ident) that we will need to read the most common content of a PTU file
 // check the output of this program and consult the tag dictionary if you need more
@@ -71,6 +72,7 @@ public:
     double Resolution = 0.0;
 
     long long int Nl; //total counts in the 2 channels
+    Lifetime_matrix lifeMatrix= *new Lifetime_matrix(0,0);
     //Definitions by Stefano Pierini
 
 private:
@@ -111,6 +113,7 @@ private:
     QFileInfo File_life;
     QFileInfo File_g2_far;
     QFileInfo File_g2_norm;
+    QFileInfo File_life_matrix;
 
 
     unsigned int dlen = 0;

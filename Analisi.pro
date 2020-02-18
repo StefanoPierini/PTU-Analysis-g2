@@ -26,12 +26,14 @@ CONFIG += c++11
 CONFIG += qwt
 
 SOURCES += \
+        lifetime_matrix.cpp \
         main.cpp \
         mainwindow.cpp \
         measure.cpp
 
 HEADERS += \
         UsefulFunctions.h \
+        lifetime_matrix.h \
         mainwindow.h \
         measure.h
 
