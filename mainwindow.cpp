@@ -130,7 +130,10 @@ void MainWindow::on_pushButton_Analize_clicked()
     }
 
     {
-        Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime);
+        ui->textEdit_terminal->append(ui->textEdit_fileName->toPlainText());
+//        Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime);
+        Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime, 0, ui->textEdit_terminal);
+
         //      Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), int MC, int flag_normalization, int sogliaGlob, int binNum, double altAt,int sON);
         delete M;
     }

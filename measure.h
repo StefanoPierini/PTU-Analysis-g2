@@ -8,6 +8,7 @@
 //#include <boost/filesystem.hpp>
 #include <QFileInfo>
 #include <QDir>
+#include <QTextEdit>
 //#include "gnuplot-iostream.h"
 
 #include <iostream>
@@ -62,7 +63,9 @@ class Measure
 {
 public:
     Measure(std::string FileName);
-    Measure(std::string FileName, int MC, int flag_normalization=false, int sogliaGlob=0, int binNum=50, int g2width=10, double altAt=0, double intTime=0.01, int sON=0);
+    //    Measure(std::string FileName, int MC, int flag_normalization=false, int sogliaGlob=0, int binNum=50, int g2width=10, double altAt=0, double intTime=0.01, int sON=0);
+    Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit *terminal);
+
     ~Measure();
     std::string FileName="";
 //    boost::filesystem::path File_out="";
@@ -70,6 +73,7 @@ public:
     long int Nch2=0;
     double GlobRes = 0.0;
     double Resolution = 0.0;
+    QTextEdit *terminal;
 
     long long int Nl; //total counts in the 2 channels
     Lifetime_matrix lifeMatrix= *new Lifetime_matrix(0,0);

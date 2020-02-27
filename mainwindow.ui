@@ -58,7 +58,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu';&quot;&gt;/home/pierinis/Documenti/Dottorato/DatiParigi/Codici/AnalisiPTU/em3.ptu&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;/home/pierinis/Documenti/Dottorato/DatiParigi/Codici/AnalisiPTU/em3.ptu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="acceptRichText">
          <bool>false</bool>
@@ -70,7 +70,7 @@ p, li { white-space: pre-wrap; }
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_settings">
        <attribute name="title">
@@ -231,6 +231,13 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>Analize</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QProgressBar" name="progressBar_mesure">
+              <property name="value">
+               <number>24</number>
               </property>
              </widget>
             </item>

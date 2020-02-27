@@ -17,7 +17,7 @@ Measure::Measure(std::string FileName){
  * @param intTime integration time for blinking analisys in s
  * @param sON
  */
-Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON)
+Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit* terminal)
 {
     if( (MC==1 ||MC==2)&& sogliaGlob>=0 && altAt >=0 && sON>=0)
     {
@@ -29,6 +29,7 @@ Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogli
         this->sON=sON;
         this->g2width=g2width;
         this->intTime=intTime;
+        this->terminal=terminal;
     }
     this->MeasureCC(FileName);
 //    lifeMatrix= *new Lifetime_matrix(0,0);
@@ -112,12 +113,21 @@ Measure::~Measure(){
 
     //    std::this_thread::sleep_for(std::chrono::seconds(1));
     //    sleep(1);
-    printf("\nproportions:\n"
+//    printf("\nproportions:\n"
+//           "    %f%% ch1\n"
+//           "    %f%% ch2\n",
+//           Nch1/((double)(Nch1+Nch2)),
+//           Nch2/((double)(Nch1+Nch2))
+//           );
+    QString appoggio;
+
+    appoggio.sprintf("\nproportions:\n"
            "    %f%% ch1\n"
            "    %f%% ch2\n",
            Nch1/((double)(Nch1+Nch2)),
            Nch2/((double)(Nch1+Nch2))
            );
+    terminal->append(appoggio);
     //    printf("\n press enter to exit...\n");
     //getchar();
     //exit(0);
@@ -204,8 +214,11 @@ void Measure::GotPhoton(long long TimeTag, int Channel, int DTime)
 
     if(IsT2)
     {
-        printf("T2 files not supported!");
-        exit(-1);
+        QString appoggio;
+        appoggio.sprintf("T2 files not supported!");
+        terminal->append(appoggio);
+        return;
+        //exit(-1);
         //fprintf(fpout,"#%I64u CHN %1x %I64u %8.0lf\n", RecNum, Channel, TimeTag, (TimeTag * GlobRes * 1e12));
     }
     else
@@ -338,7 +351,9 @@ void Measure::CreateG2(fotone f){
             //int indice= (int) ((time+tmax)/binw);
             // printf("globRes=%e, binw=%e\n",GlobRes,binw);
             if(indice>=bin || indice<0) {
-                printf("\n ERROR! i=%d\t bin=%d\n",indice,bin);
+                QString appoggio;
+                appoggio.sprintf("\n ERROR! i=%d\t bin=%d\n",indice,bin);
+                terminal->append(appoggio);
             } else{
                 g2array[indice]++;}
         }
@@ -425,7 +440,9 @@ void Measure::CreateFarG2(fotone f){
             indice= (int) ((time+(tmax)/2)/binw);
 
             if(indice>=bin_far || indice<0) {
-                printf("\n ERROR! i=%d\t bin=%d\n",indice,bin_far);
+                QString appoggio;
+                appoggio.sprintf("\n ERROR! i=%d\t bin=%d\n",indice,bin_far);
+                terminal->append(appoggio);
             } else{
                 g2array_far[indice]++;}
         }
@@ -482,7 +499,12 @@ void Measure::LifeTime(fotone f1, int soglia){
 void Measure::print_histogram(){
     /* Fuction that prints all the results on different files
    */
-    printf("printing in files\n");
+    {
+        QString appoggio;
+        appoggio.sprintf("printing in files");
+        terminal->append(appoggio);
+        QCoreApplication::processEvents();
+    }
     //  double normFactor, normFactorON;
     long int Ntot=Nch1+Nch2;
     double Nl_on;
@@ -636,7 +658,9 @@ void Measure::ProcessPHT2(unsigned int TTTRRecord)
     {
         if((int)Record.bits.channel > 4) //Should not occur
         {
-            printf(" Illegal Chan: #%I64lld %1u\n",RecNum,Record.bits.channel);
+            QString s;
+            s.sprintf(" Illegal Chan: #%I64lld %1u\n",RecNum,Record.bits.channel);
+            terminal->append(s);
             fprintf(fpout,"# illegal chan.\n");
         }
         else
@@ -772,22 +796,27 @@ int Measure::readHeader()
     char32_t* WideBuffer;
     long long NumRecords = -1;
     long long RecordType = 0;
-
+    QString s;
     Result = fread( &Magic, 1, sizeof(Magic) ,fpin);
     if (Result!= sizeof(Magic))
     {
-        printf("\nerror reading header, aborted.");
+        s.sprintf("\nerror reading header, aborted.");
+        terminal->append(s);
         goto close;
     }
     Result = fread(&Version, 1, sizeof(Version) ,fpin);
     if (Result!= sizeof(Version))
     {
-        printf("\nerror reading header, aborted.");
+        s.sprintf("\nerror reading header, aborted.");
+        terminal->append(s);
+
         goto close;
     }
     if (strncmp(Magic, "PQTTTR", 6))
     {
-        printf("\nWrong Magic, this is not a PTU file.");
+        s.sprintf("\nWrong Magic, this is not a PTU file.");
+        terminal->append(s);
+
         goto close;
     }
     fprintf(fpout, "#Tag Version: %s \n", Version);
@@ -802,7 +831,9 @@ int Measure::readHeader()
         Result = fread( &TagHead, 1, sizeof(TagHead) ,fpin);
         if (Result!= sizeof(TagHead))
         {
-            printf("\nIncomplete File.");
+            s.sprintf("\nIncomplete File.");
+            terminal->append(s);
+
             goto close;
             //            close();
         }
@@ -839,11 +870,14 @@ int Measure::readHeader()
             fprintf(fpout, "#%E", *(double*)&(TagHead.TagValue));
             if (strcmp(TagHead.Ident, TTTRTagRes)==0) {// Resolution for TCSPC-Decay
                 Resolution = *(double*)&(TagHead.TagValue);
-                printf("\n *** Resolution=%e s  ***\n", Resolution);
+                s.sprintf("*** Resolution=%e s  ***", Resolution);
+                terminal->append(s);
             }
             if (strcmp(TagHead.Ident, TTTRTagGlobRes)==0) {// Global resolution for timetag
                 GlobRes = *(double*)&(TagHead.TagValue); // in ns
-                printf("\n *** GlobRes=%e s  ***\n", GlobRes);
+                s.sprintf("*** GlobRes=%e s  ***", GlobRes);
+                terminal->append(s);
+                QCoreApplication::processEvents();
             }
             break;
         case tyFloat8Array:
@@ -862,7 +896,10 @@ int Measure::readHeader()
             Result = fread(AnsiBuffer, 1, (size_t)TagHead.TagValue, fpin);
             if (Result!= TagHead.TagValue)
             {
-                printf("\nIncomplete File.");
+
+                s.sprintf("Incomplete File.");
+                terminal->append(s);
+                QCoreApplication::processEvents();
                 free(AnsiBuffer);
                 goto close;
             }
@@ -874,7 +911,9 @@ int Measure::readHeader()
             Result = fread(WideBuffer, 1, (size_t)TagHead.TagValue, fpin);
             if (Result!= TagHead.TagValue)
             {
-                printf("\nIncomplete File.");
+                s.sprintf("Incomplete File.");
+                terminal->append(s);
+                QCoreApplication::processEvents();
                 free(WideBuffer);
                 goto close;
             }
@@ -887,7 +926,10 @@ int Measure::readHeader()
             fseek(fpin, (long)TagHead.TagValue, SEEK_CUR);
             break;
         default:
-            printf("Illegal Type identifier found! Broken file?");
+
+            s.sprintf("Illegal Type identifier found! Broken file?");
+            terminal->append(s);
+            QCoreApplication::processEvents();
             goto close;
         }
 
@@ -956,7 +998,9 @@ int Measure::readHeader()
         Result = fread(&TTTRRecord, 1, sizeof(TTTRRecord) ,fpin);
         if (Result!= sizeof(TTTRRecord))
         {
-            printf("\nUnexpected end of input file!");
+            s.sprintf("Unexpected end of input file!");
+            terminal->append(s);
+            QCoreApplication::processEvents();
             break;
         }
         switch (RecordType)
@@ -1014,13 +1058,17 @@ close:
 ex:
     std::this_thread::sleep_for(std::chrono::seconds(1));
     //    sleep(1);
-    printf("warning: close function used");
-    printf("\nproportions:\n"
+    QString s;
+    s.sprintf("warning: close function used");
+    terminal->append(s);
+    s.sprintf("proportions:\n"
            "    %f%% ch1\n"
            "    %f%% ch2\n",
            Nch1/((double)(Nch1+Nch2)),
            Nch2/((double)(Nch1+Nch2))
            );
+    terminal->append(s);
+    QCoreApplication::processEvents();
     //    printf("\n press enter to exit...\n");
     //    getchar();
     //exit(0);
