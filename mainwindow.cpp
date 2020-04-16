@@ -45,6 +45,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_Analize_clicked()
 {
     ui->pushButton_Analize->setDisabled(true);
+    ui->progressBar_mesure->reset();
+    ui->progressBar_mesure->setRange(0,0);
+    ui->progressBar_mesure->setValue(0);
     QString text=ui->pushButton_Analize->text();
     ui->pushButton_Analize->setText("Analisis in progress");
     int MC;
@@ -132,7 +135,7 @@ void MainWindow::on_pushButton_Analize_clicked()
     {
         ui->textEdit_terminal->append(ui->textEdit_fileName->toPlainText());
 //        Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime);
-        Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime, 0, ui->textEdit_terminal);
+        Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), MC, flag_normalization, sogliaGlob, binNum, g2width, altAt, intTime, 0, ui->textEdit_terminal, ui->progressBar_mesure);
 
         //      Measure *M= new Measure(ui->textEdit_fileName->toPlainText().toStdString(), int MC, int flag_normalization, int sogliaGlob, int binNum, double altAt,int sON);
         delete M;

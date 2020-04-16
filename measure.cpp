@@ -2,9 +2,9 @@
 
 
 
-Measure::Measure(std::string FileName){
-    this->MeasureCC(FileName);
-}
+//Measure::Measure(std::string FileName){
+//    this->MeasureCC(FileName);
+//}
 /**
  * @brief Measure::Measure
  * @param FileName
@@ -17,7 +17,7 @@ Measure::Measure(std::string FileName){
  * @param intTime integration time for blinking analisys in s
  * @param sON
  */
-Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit* terminal)
+Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit* terminal, QProgressBar* progressbarr)
 {
     if( (MC==1 ||MC==2)&& sogliaGlob>=0 && altAt >=0 && sON>=0)
     {
@@ -31,7 +31,11 @@ Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogli
         this->intTime=intTime;
         this->terminal=terminal;
     }
+    this->progressbar=progressbarr;
+
+    //this must be the last istruction!!!
     this->MeasureCC(FileName);
+
 //    lifeMatrix= *new Lifetime_matrix(0,0);
 }
 
@@ -88,9 +92,13 @@ void Measure::MeasureCC(std::string FileName)
     g2array=(long long int*)calloc(bin,sizeof(long long int));
     g2array_far=(long long int*)calloc(bin_far,sizeof(long long int));
 
+    fprintf(fint,"#Time Intensity int_ch1 mean_lifetime_ch1 int_ch2 mean_lifetime_ch2\n");
+
+
 
     //command that starts the analysis
     this->readHeader();
+
     return;
 }
 
@@ -250,23 +258,47 @@ void Measure::Intensity(fotone f1){
     the function that perfoms the G2 and the lifeTime.
     Used to apply a threshold.
    */
+//    fprintf(fint,"#Time Intensity int_ch1 mean_lifetime_ch1 int_ch2 mean_lifetime_ch2\n");
     if(MC!=f1.Channel) {
+        intC_a++;
+        intC_all++;
         vf_both.push_back(f1);
+        vf_A.push_back(f1);
         return;
     }
     if (f1.tt<startTime+intTime){
         intC++;
+        intC_all++;
         vf.push_back(f1);
         vf_both.push_back(f1);
     }else{
-        fprintf(fint,"%Le %d\n", startTime+(intTime/2), intC);
+//        fprintf(fint,"%Le %d\n", startTime+(intTime/2), intC);
+        double mean_lifetime=0;
+        for(std::vector<fotone>::size_type i=0; i<vf.size();i++){
+            vf[i].intensity=intC;
+            mean_lifetime+=vf[i].Dtime;
+        }
+        mean_lifetime/=intC;
+        mean_lifetime*=Resolution;
+        double mean_lifetime_A=0;
+        for(std::vector<fotone>::size_type i=0; i<vf.size();i++){
+            vf[i].intensity=intC;
+            mean_lifetime_A+=vf[i].Dtime;
+        }
+        mean_lifetime_A/=intC;
+        mean_lifetime_A*=Resolution;
+        fprintf(fint,"%Le %d %d %e %d %e\n",
+                startTime+(intTime/2), intC_all, intC, mean_lifetime, intC_a, mean_lifetime_A);
         for(std::vector<fotone>::size_type i=0; i<vf_both.size();i++){
             vf_both[i].intensity=intC;
             CreateG2(vf_both[i]);
             if(flag_normalization==1) CreateFarG2(vf_both[i]);
             LifeTime(vf_both[i], sogliaGlob);
         }
-        intC=1; //reset the counter
+
+        intC=1; //reset the counters, take care of the photon just arrived (needs to be 1)
+        intC_a=0;
+        intC_all=1;
         vf.clear();
         vf_both.clear();
         vf.push_back(f1);
@@ -794,7 +826,6 @@ int Measure::readHeader()
     char* AnsiBuffer;
 //    wchar_t* WideBuffer;
     char32_t* WideBuffer;
-    long long NumRecords = -1;
     long long RecordType = 0;
     QString s;
     Result = fread( &Magic, 1, sizeof(Magic) ,fpin);
@@ -993,8 +1024,22 @@ int Measure::readHeader()
     uint32_t TTTRRecord;
 //    std::cout<<"unsigned int size: " << sizeof (uint32_t)<<"\n";
 
+    progressbar->setRange(0,999);
+    progressbar->setMaximum(999);
+    progressbar->setValue(0);
+    QCoreApplication::processEvents();
     for(RecNum=0;RecNum<NumRecords;RecNum++)
     {
+        double p=static_cast<double>(RecNum)/NumRecords;
+        if(p>(progress+0.01)){
+            progress=p;
+//            if(progress>1) progress=1;
+//            ui->progressBar_mesure->setValue(progress);
+//            QCoreApplication::processEvents();
+
+            progressbar->setValue(static_cast<int>(progress*1000));
+            QCoreApplication::processEvents();
+        }
         Result = fread(&TTTRRecord, 1, sizeof(TTTRRecord) ,fpin);
         if (Result!= sizeof(TTTRRecord))
         {

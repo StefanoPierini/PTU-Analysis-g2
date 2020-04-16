@@ -2,6 +2,8 @@
 #define MEASURE_H
 
 #include <QMainWindow>
+//#include <mainwindow.h>
+//#include "ui_mainwindow.h"
 #include <chrono>
 #include <thread>
 #include <stdio.h>
@@ -9,6 +11,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QTextEdit>
+#include<QProgressBar>
 //#include "gnuplot-iostream.h"
 
 #include <iostream>
@@ -50,6 +53,11 @@
 #define rtTimeHarp260PT2 0x00010206    // (SubID = $00 ,RecFmt: $01) (V1), T-Mode: $02 (T2), HW: $06 (TimeHarp260P)
 
 #pragma pack(8) //structure alignment to 8 byte boundaries
+
+namespace Ui {
+class MainWindow;
+};
+
 struct fotone{
   long long int RecNum;
   int Channel;
@@ -62,9 +70,9 @@ struct fotone{
 class Measure
 {
 public:
-    Measure(std::string FileName);
+//    Measure(std::string FileName);
     //    Measure(std::string FileName, int MC, int flag_normalization=false, int sogliaGlob=0, int binNum=50, int g2width=10, double altAt=0, double intTime=0.01, int sON=0);
-    Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit *terminal);
+    Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit *terminal, QProgressBar *progressbar);
 
     ~Measure();
     std::string FileName="";
@@ -74,6 +82,7 @@ public:
     double GlobRes = 0.0;
     double Resolution = 0.0;
     QTextEdit *terminal;
+    QProgressBar *progressbar;
 
     long long int Nl; //total counts in the 2 channels
     Lifetime_matrix lifeMatrix= *new Lifetime_matrix(0,0);
@@ -85,6 +94,8 @@ private:
     FILE *fint, *flife, *f_g2_far, *f_norm;
     bool IsT2;
     long long RecNum=0;
+    long long NumRecords = -1;
+    double progress=0;
     long long oflcorrection=0;
     long long truensync=0, truetime=0;
     int m, c;
@@ -122,9 +133,10 @@ private:
 
     unsigned int dlen = 0;
     unsigned int cnt_0=0, cnt_1=0;
-    int intC=0;
+    int intC=0, intC_a=0, intC_all=0;
     long double startTime=0; //used to evaluate the intensity
     std::vector<fotone> vf;//used in the function Intensity
+    std::vector<fotone> vf_A;//used in the function Intensity contains second (other) channel
     std::vector<fotone> vf_both;//used in the function Intensity contains both channels
     fotone *fc1, *fc2; //fotons recently seen on ch1 and ch2
     fotone *fc1_far, *fc2_far;
