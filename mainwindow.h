@@ -21,6 +21,7 @@
 #include <qwt_plot_renderer.h>
 
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -32,7 +33,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    Ui::MainWindow *ui;
 
 private slots:
     void on_pushButton_clicked();
@@ -46,7 +47,7 @@ private slots:
     void on_pushButton_graphg2_n_clicked();
     void on_pushButton_g2nSave_clicked();
 private:
-    Ui::MainWindow *ui;
+
     QwtPlotCurve *curveg2, *curveg2far, *curvelifetime, *curveTimeTrace, *curveg2_n;
     QwtPlotCurve *curveHistFreq;
     QwtPlotGrid *grid;

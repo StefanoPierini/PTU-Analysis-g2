@@ -26,6 +26,7 @@ CONFIG += c++11
 CONFIG += qwt
 
 SOURCES += \
+        cnpy.cpp \
         lifetime_matrix.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
 
 HEADERS += \
         UsefulFunctions.h \
+        cnpy.h \
         lifetime_matrix.h \
         mainwindow.h \
         measure.h
@@ -41,8 +43,17 @@ FORMS += \
         mainwindow.ui
 
 #LIBS += -lboost_iostreams -lboost_system -lboost_filesystem
+LIBS +=  -lz #-lcnpy
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    cnpy-master/CMakeLists.txt \
+    cnpy-master/LICENSE \
+    cnpy-master/README.md \
+    cnpy-master/mat2npz \
+    cnpy-master/npy2mat \
+    cnpy-master/npz2mat

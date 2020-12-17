@@ -17,7 +17,7 @@
  * @param intTime integration time for blinking analisys in s
  * @param sON
  */
-Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit* terminal, QProgressBar* progressbarr)
+Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit* terminal, QProgressBar* progressbarr, Ui::MainWindow* ui)
 {
     if( (MC==1 ||MC==2)&& sogliaGlob>=0 && altAt >=0 && sON>=0)
     {
@@ -32,10 +32,12 @@ Measure::Measure(std::string FileName, int MC, int flag_normalization, int sogli
         this->terminal=terminal;
     }
     this->progressbar=progressbarr;
-
+    this->ui=ui;
+    if(ui->checkBox_save_npz->isChecked()){
+        N_towrite=-1;
+    }
     //this must be the last istruction!!!
     this->MeasureCC(FileName);
-
 //    lifeMatrix= *new Lifetime_matrix(0,0);
 }
 
@@ -54,6 +56,10 @@ void Measure::MeasureCC(std::string FileName)
     QFileInfo File_life=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_life.dat";
     QFileInfo File_g2_far=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_far.dat";
     QFileInfo File_g2_norm=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_g2_norm.dat";
+
+    File_AllData = File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_all.npy";
+    File_Metadata =  File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_metadata.npz";
+
     File_life_matrix=File_Name.canonicalPath()+QDir::separator()+File_Name.baseName()+"_lifeMatrix.dat";
     //    boost::filesystem::path File_name=boost::filesystem::path(FileName);
     //    QFileInfo File_out= Append_to_name(File_Name,"out");
@@ -239,7 +245,7 @@ void Measure::GotPhoton(long long TimeTag, int Channel, int DTime)
             .Dtime=DTime,
             .tt=TimeTag*GlobRes+DTime*Resolution,
         };
-
+        SaveAll(f);
         Intensity(f);
         Nl=f.TimeTag;
         if(f.Channel==1) {
@@ -248,9 +254,51 @@ void Measure::GotPhoton(long long TimeTag, int Channel, int DTime)
         else{
             Nch2++;
         }
-
         //
     }
+}
+
+void Measure::SaveAll(fotone f){
+    if(N_towrite==-2) return;
+    if(f.Channel==10){
+        //signal to save all and flush
+        cnpy::npy_save(File_AllData.filePath().toStdString(),&ChannelV[0],{static_cast<ulong>(N_towrite),3},"a");
+        N_towrite=0;
+        ChannelV.clear();
+        return;
+    }
+    if(N_towrite==-1){
+        //prima volta che passa da qui
+ //      std::vector<double> variables={Resolution,GlobRes};
+ //       std::vector<std::string> names={"Resolution","GlobRes"};
+        cnpy::npz_save(File_Metadata.filePath().toStdString(),"Resolution",&Resolution,{1},"w");
+        cnpy::npz_save(File_Metadata.filePath().toStdString(),"GlobRes",&GlobRes,{1},"a");
+
+        ChannelV.push_back(f.Channel);
+        ChannelV.push_back(f.TimeTag);
+        ChannelV.push_back(f.Dtime);
+        N_towrite++;
+        cnpy::npy_save(File_AllData.filePath().toStdString(),&ChannelV[0],{static_cast<ulong>(N_towrite),3},"w");
+        N_towrite=0;
+        ChannelV.clear();
+ //       cnpy::npz_save(File_AllData.filePath().toStdString(),"");
+        return;
+    }
+    if(N_towrite<(max_in_memory-1)){
+        N_towrite++;
+        ChannelV.push_back(f.Channel);
+        ChannelV.push_back(f.TimeTag);
+        ChannelV.push_back(f.Dtime);
+    }else{
+        ChannelV.push_back(f.Channel);
+        ChannelV.push_back(f.TimeTag);
+        ChannelV.push_back(f.Dtime);
+        N_towrite++;
+        cnpy::npy_save(File_AllData.filePath().toStdString(),&ChannelV[0],{static_cast<ulong>(N_towrite),3},"a");
+        N_towrite=0;
+        ChannelV.clear();
+    }
+    return;
 }
 
 void Measure::Intensity(fotone f1){
@@ -538,6 +586,11 @@ void Measure::print_histogram(){
         QCoreApplication::processEvents();
     }
     //  double normFactor, normFactorON;
+
+    fotone f;
+    f.Channel=10;//singal to flush "saveAll"
+    SaveAll(f);
+
     long int Ntot=Nch1+Nch2;
     double Nl_on;
     probT=Nch1/Nl;

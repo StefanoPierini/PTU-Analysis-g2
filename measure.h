@@ -18,6 +18,11 @@
 #include <QCoreApplication>
 #include <cstdlib>
 #include <lifetime_matrix.h>
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+//to save data in python compressed format
+#include "cnpy.h"
 
 // some important Tag Idents (TTagHead.Ident) that we will need to read the most common content of a PTU file
 // check the output of this program and consult the tag dictionary if you need more
@@ -54,9 +59,9 @@
 
 #pragma pack(8) //structure alignment to 8 byte boundaries
 
-namespace Ui {
-class MainWindow;
-};
+//namespace Ui {
+//class MainWindow;
+//};
 
 struct fotone{
   long long int RecNum;
@@ -72,7 +77,7 @@ class Measure
 public:
 //    Measure(std::string FileName);
     //    Measure(std::string FileName, int MC, int flag_normalization=false, int sogliaGlob=0, int binNum=50, int g2width=10, double altAt=0, double intTime=0.01, int sON=0);
-    Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit *terminal, QProgressBar *progressbar);
+//    Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit *terminal, QProgressBar *progressbar);
 
     ~Measure();
     std::string FileName="";
@@ -88,6 +93,7 @@ public:
     Lifetime_matrix lifeMatrix= *new Lifetime_matrix(0,0);
     //Definitions by Stefano Pierini
 
+    Measure(std::string FileName, int MC, int flag_normalization, int sogliaGlob, int binNum, int g2width, double altAt, double intTime, int sON, QTextEdit *terminal, QProgressBar *progressbarr, Ui::MainWindow* ui);
 private:
     FILE *fpin=nullptr;
     FILE *fpout=nullptr;
@@ -120,6 +126,7 @@ private:
     std::vector <std::pair<double, long int>> get_g2_max_vector(long long int *g2array_far);
     void LifeTime(fotone f1, int soglia);
     void print_histogram();
+    void SaveAll(fotone f);
     QFileInfo Append_to_name(QFileInfo P, QString string);
 
 
@@ -129,8 +136,11 @@ private:
     QFileInfo File_g2_far;
     QFileInfo File_g2_norm;
     QFileInfo File_life_matrix;
+    QFileInfo File_AllData;
+    QFileInfo File_Metadata;
 
 
+    Ui::MainWindow* ui;
     unsigned int dlen = 0;
     unsigned int cnt_0=0, cnt_1=0;
     int intC=0, intC_a=0, intC_all=0;
@@ -166,6 +176,24 @@ private:
     int sON=0; //soglia per considerare lo stato ON
 //    int sOFF; //soglia per considerare lo stato OFF
 
+
+    //    struct fotone{
+    //      long long int RecNum;
+    //      int Channel;
+    //      long long TimeTag;
+    //      int Dtime;
+    //      long double tt; //this is the true time
+    //      int intensity;
+    //    };
+
+    // here the functions to write all datas
+    int N_towrite=-2; //number of photons to write, -2 if not needed to save, -1 in first cycle else starts form 0.
+    ulong max_in_memory=10000; //max photons before writing
+    std::vector<long> ChannelV;
+//    std::vector<long> TimeTagV;
+//    std::vector<int> DtimeV;
+
+//    std::vector<long double> tt;
 
 
 };
